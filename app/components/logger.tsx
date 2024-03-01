@@ -16,12 +16,12 @@ const logger =
         format: format.combine(appendAdditionalData(), format.json()),
         defaultMeta: {
           entity: {
-            guid: "MTk2OTM4N3xCUk9XU0VSfEFQUExJQ0FUSU9OfDExMjAyNzk1Mzg",
+            guid: process.env.NEW_RELIC_ENTITY_GUID,
           },
         },
         transports: [
           new WinstonNewrelicLogsTransport({
-            licenseKey: "1b3fb7457dce4b4d7785242acb7bb5a3b3ab5d94",
+            licenseKey: process.env.NEW_RELIC_LICENSE_KEY ?? "",
             apiUrl: "https://log-api.newrelic.com",
           }),
         ],

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { NewrelicScript, NewrelicBrowserScript } from "./newrelic";
+import { logger } from "./components/logger";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,11 +16,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  logger.info("Root Layout");
   return (
     <html lang="en">
       <head>
-        <NewrelicBrowserScript />
-        {/* <NewrelicScript /> */}
+        {/* <NewrelicBrowserScript /> */}
+        <NewrelicScript />
       </head>
       <body className={inter.className}>{children}</body>
     </html>

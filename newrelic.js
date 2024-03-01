@@ -9,11 +9,11 @@ exports.config = {
   /**
    * Array of application names.
    */
-  app_name: ["newrelic-nextjs-integration"],
+  app_name: [""],
   /**
    * Your New Relic license key.
    */
-  license_key: "1b3fb7457dce4b4d7785242acb7bb5a3b3ab5d94",
+  license_key: "",
   /**
    * This setting controls distributed tracing.
    * Distributed tracing lets you see the path that a request takes through your
