@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# NewRelic NextJS Integration
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## APM
+- Install New Relic packages ```npm install newrelic @newrelic/next``` 
+- Create a newrelic configuration file [newrelic.js](./newrelic.js)
+  - For more settings see [here](./node_modules/newrelic/lib/config/default.js)
+  - **App Name and License Key are required**
+- Modify package.json and add the following to your dev and start scripts to require @newrelic/next
+  - `NODE_OPTIONS='-r @newrelic/next'`
+## Browser Integration
+- Create a new component
+- Get the script using newrelic.getBrowserTimingHeader
+- Make sure to remove script wrapper and allowTransactionlessInjection
+```typescript  
+  const browserTimingHeader = newrelic.getBrowserTimingHeader({
+    hasToRemoveScriptWrapper: true,
+    // @ts-ignore
+    allowTransactionlessInjection: true,
+  });
 ```
+- Your component should look like [this](./app/newrelic.tsx#L6)
+- Then add to your root [Layout](./app/layout.tsx)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Error Handling 
+- Once we have the browser integration complete, now we can forward our errors over to newrelic
+- If using typescript you'll have to add newrelic to the Window type
+    ```typescript
+    declare const window: Window &
+        typeof globalThis & {
+            newrelic: any
+        }
+    ```
+- In your default error page add
+ ```typescript
+    useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.newrelic?.noticeError(error)
+    }
+  }, [error])
+  ```
+- The resulting error page should look like [this](./app/error.tsx)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Copy Paste method from this [comment](https://github.com/newrelic/newrelic-node-nextjs/issues/154#issuecomment-1773938830)
+- Get browser script from newrelic and paste it in your app.  I created a new [variable](./app/script.ts)
+  - Make sure to remove the script html tags
+  - __Do a search on `\n` and replace with a space__
+```javascript
+    ;window.NREUM||(NREUM={})... // <--- Make sure to replace `\n` with ` ` there should be four of them 
+```
+- Add a new component for the script tag [example](./app/newrelic.tsx#L24)
+- Then add to your root [Layout](./app/layout.tsx)

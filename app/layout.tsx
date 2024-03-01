@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { NewrelicScript, NewrelicBrowserScript } from "./newrelic";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <NewrelicBrowserScript />
+        {/* <NewrelicScript /> */}
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   );
