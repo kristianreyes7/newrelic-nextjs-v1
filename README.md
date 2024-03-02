@@ -9,6 +9,12 @@
 ```
 - Add a new component for the script tag [example](./app/newrelic.tsx#L13)
 - Then add to your root [Layout](./app/layout.tsx)
+- Lastly add this to your next.config.js [here](./next.config.mjs#L3) 
+```javascript
+ experimental: {
+    serverComponentsExternalPackages: ["newrelic"],
+  },
+``` 
 
 ### Error Handling 
 - Once we have the browser integration complete, now we can forward our errors over to newrelic
