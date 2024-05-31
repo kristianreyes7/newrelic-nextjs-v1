@@ -1,1 +1,1 @@
-export const newrelicScript = ``
+export const newrelicScript = String.raw``
